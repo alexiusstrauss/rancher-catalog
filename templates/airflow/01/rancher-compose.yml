@@ -1,0 +1,64 @@
+version: '2'
+catalog:
+  name: calculo-automatico-batch
+  version: 23
+  description: calculo-automatico-batch
+  uuid: 0
+  questions:
+  - variable: "AMBIENTE"
+    description: "Ambiente de execução"
+    label: "Ambiente"
+    type: "enum"
+    required: true
+    options:
+    - prod
+    - homolog
+    - desenv
+  - variable: "CHAVE_SECRETA_JWT"
+    description: "Use a chave salva no Vault no caminho: secret/sefaz/**AMBIENTE**/delivery atributo sfz-vault-jwt-secret-key."
+    label: "Chave Secreta JWT"
+    type: "password"
+    required: true
+  - variable: "ROLE_ID"
+    description: "Role ID do AppRole"
+    label: "Role ID"
+    type: "string"
+    required: true
+  - variable: "SECRET_ID"
+    description: "Secret ID do AppRole"
+    label: "Secret ID"
+    type: "string"
+    required: true
+  - variable: "SENHA_JKS_CADEIA_SEFAZ"
+    description: "Use a chave salva no Vault no caminho: secret/sefaz/**AMBIENTE**/delivery sfz-vault-jks-cadeia-sefaz-password."
+    label: "Senha do JKS"
+    type: "password"
+    required: true
+
+services:
+
+  sfz-calculo-automatico-batch:
+    retain_ip: true
+    scale: 1
+    start_on_create: true
+    health_check:
+      response_timeout: 2000
+      healthy_threshold: 2
+      port: 8000
+      unhealthy_threshold: 3
+      initializing_timeout: 300000
+      interval: 2000
+      strategy: recreate
+      reinitializing_timeout: 180000
+
+  sfz-calculo-automatico-classificador-server:
+    scale: 1
+    start_on_create: true
+
+  sfz-calculo-automatico-classificador-worker:
+    scale: 2
+    start_on_create: true
+
+  sfz-calculo-automatico-importador:
+    scale: 1
+    start_on_create: true

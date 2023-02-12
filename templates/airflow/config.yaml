@@ -1,0 +1,5 @@
+name: ApacheAirflow
+description: |
+  Airflow personalizado para Sefaz
+category: Sefaz
+version: 14
