@@ -1,7 +1,5 @@
-version: '2'
-
+version: "2"
 services:
-
   sfz-calculo-automatico-batch:
     image: repositorio-docker.sefaz.al.gov.br/sefaz/sfz-calculo-automatico:3.2.13-SNAPSHOT
     environment:
@@ -16,8 +14,8 @@ services:
       JWT_SECRET: ${CHAVE_SECRETA_JWT}
     labels:
       traefik.frontend.rule: Host:calculoautomaticoapi.sefaz.al.gov.br,calculoautomaticoapi.hom.sefaz.al.gov.br,calculoautomaticoapi.desenv.sefaz.al.gov.br
-      traefik.port: '8000'
-      traefik.enable: 'true'
+      traefik.port: "8000"
+      traefik.enable: "true"
       traefik.backend: sfz-calculo-automatico
       io.rancher.container.pull_image: always
     tty: true
@@ -26,7 +24,6 @@ services:
     stdin_open: true
     networks:
       - calculo_network
-
   sfz-calculo-automatico-classificador-server:
     image: repositorio-docker.sefaz.al.gov.br/sefaz/sfz-calculo-automatico:3.2.13-SNAPSHOT
     environment:
@@ -47,7 +44,6 @@ services:
     stdin_open: true
     networks:
       - calculo_network
-
   sfz-calculo-automatico-classificador-worker:
     image: repositorio-docker.sefaz.al.gov.br/sefaz/sfz-calculo-automatico:3.2.13-SNAPSHOT
     environment:
@@ -70,7 +66,6 @@ services:
       - sfz-calculo-automatico-classificador-server
     networks:
       - calculo_network
-
   sfz-calculo-automatico-importador:
     image: repositorio-docker.sefaz.al.gov.br/sefaz/sfz-calculo-automatico:3.2.13-SNAPSHOT
     environment:
@@ -91,6 +86,5 @@ services:
     stdin_open: true
     networks:
       - calculo_network
-
 networks:
-  calculo_network:
+  calculo_network: null
