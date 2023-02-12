@@ -1,0 +1,20 @@
+{
+    "apps": [
+        {
+            "nome": "sfz-alertas-simples-nacional-gateway",
+            "memoria": "640",
+            "vault": [
+                "sfz-vault-datasource-username",
+                "sfz-vault-datasource-password"
+            ]
+        },
+        {
+            "nome": "sfz-alertas-simples-nacional-api",
+            "memoria": "640",
+            "vault": [
+                "sfz-vault-datasource-username",
+                "sfz-vault-datasource-password"
+            ]
+        }
+    ]
+}

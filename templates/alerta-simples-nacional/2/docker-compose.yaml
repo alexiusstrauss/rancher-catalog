@@ -1,0 +1,66 @@
+version: '2'
+
+services:
+
+  jhipster-registry:
+    image: rancher/dns-service
+    external_links:
+    - jhipster-registry/jhipster-registry-primary:jhipster-registry-primary
+
+  sefaz-postgres:
+    image: centos/postgresql-96-centos7
+    environment:
+      - POSTGRESQL_USER=gateway
+      - POSTGRESQL_PASSWORD=gateway
+      - POSTGRESQL_DATABASE=gateway
+      - POSTGRESQL_MAX_CONNECTIONS=100
+
+  sfz-alertas-simples-nacional-api:
+    environment:
+      SPRING_PROFILES_ACTIVE: ${AMBIENTE},vault
+      SPRING_CLOUD_VAULT_APP_ROLE_ROLE_ID: ${ROLE_ID}
+      SPRING_CLOUD_VAULT_APP_ROLE_SECRET_ID: ${SECRET_ID}
+      SPRING_CLOUD_VAULT_GENERIC_BACKEND: secret/sefaz/${AMBIENTE}/apps
+      JHIPSTER_SECURITY_AUTHENTICATION_JWT_SECRET: ${CHAVE_SECRETA_JWT}
+      SPRING_CLOUD_VAULT_SSL_TRUST_STORE_PASSWORD: ${SENHA_JKS_CADEIA_SEFAZ}
+      SEFAZ_STACK_NOME: alerta_simples_nacional
+      SEFAZ_STACK_VERSAO: 2
+      SEFAZ_STACK_AMBIENTE: ${AMBIENTE}
+      JHIPSTER_SLEEP: 0
+      TZ: America/Maceio
+    labels:
+      io.rancher.container.pull_image: always
+    tty: true
+    image: repositorio-docker.sefaz.al.gov.br/sefaz/alertas-simples-nacional-api:1.0.0.201810081452
+    volumes:
+    - certificados:/certificados
+    - /etc/localtime:/etc/localtime:ro
+    links:
+    - 'jhipster-registry:'
+    stdin_open: true
+
+  sfz-alertas-simples-nacional-gateway:
+    environment:
+      SPRING_PROFILES_ACTIVE: ${AMBIENTE},vault
+      SPRING_CLOUD_VAULT_APP_ROLE_ROLE_ID: ${ROLE_ID}
+      SPRING_CLOUD_VAULT_APP_ROLE_SECRET_ID: ${SECRET_ID}
+      SPRING_CLOUD_VAULT_GENERIC_BACKEND: secret/sefaz/${AMBIENTE}/apps
+      JHIPSTER_SECURITY_AUTHENTICATION_JWT_SECRET: ${CHAVE_SECRETA_JWT}
+      SPRING_CLOUD_VAULT_SSL_TRUST_STORE_PASSWORD: ${SENHA_JKS_CADEIA_SEFAZ}
+      SEFAZ_STACK_NOME: alerta_simples_nacional
+      SEFAZ_STACK_VERSAO: 2
+      SEFAZ_STACK_AMBIENTE: ${AMBIENTE}
+      LIQUIBASE_ENABLED: true
+      JHIPSTER_SLEEP: 0
+      TZ: America/Maceio
+    image: repositorio-docker.sefaz.al.gov.br/sefaz/alertas-simples-nacional-gateway:1.0.0.201810011500
+    stdin_open: true
+    volumes:
+    - certificados:/certificados
+    - /etc/localtime:/etc/localtime:ro
+    tty: true
+    links:
+    - 'jhipster-registry:'
+    - 'sfz-alertas-simples-nacional-api:'
+    labels:
+      io.rancher.container.pull_image: always
